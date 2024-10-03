@@ -1,11 +1,9 @@
 import {PrismaAdapter} from "@lucia-auth/adapter-prisma";
 import {prisma} from "@/lib/prisma";
-import {generateIdFromEntropySize, Lucia, Session, User} from "lucia";
+import {Lucia, Session, User} from "lucia";
 import {cookies} from "next/headers";
 import {cache} from "react";
 import {z as zod} from "zod";
-import {hash, verify} from "@node-rs/argon2";
-import {redirect} from "next/navigation";
 
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
