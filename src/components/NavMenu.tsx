@@ -1,9 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import NavLink from "@/components/NavLink";
+import {validateRequest} from "@/lib/auth";
+import AuthStatus from "@/components/AuthStatus";
 
 
-export default function NavMenu() {
+export default async function NavMenu() {
+    const {user} = await validateRequest();
+
 
     return (
         <nav className="flex justify-between px-8 py-4 bg-blue-600 items-center">
@@ -14,6 +18,8 @@ export default function NavMenu() {
                 <NavLink to={"/about"} name={"About"}/>
                 <NavLink to={"/blog"} name={"Blog"}/>
                 <NavLink to={"/users"} name={"Users"}/>
+                {!user && <NavLink to={"/login"} name={"Login"} otherClasses="px-20"/>}
+                {user && <AuthStatus username={user.username}/>}
             </div>
         </nav>
     )
