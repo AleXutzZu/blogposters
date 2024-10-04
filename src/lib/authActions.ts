@@ -1,11 +1,40 @@
 "use server";
 
 import {hash, verify} from "@node-rs/argon2";
-import {generateIdFromEntropySize} from "lucia";
+import {generateIdFromEntropySize, Session, User} from "lucia";
 import {prisma} from "@/lib/prisma";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
-import {AuthActionResult, authSchema, lucia, validateRequest} from "@/lib/auth";
+import {AuthActionResult, authSchema, lucia} from "@/lib/auth";
+import {cache} from "react";
+
+export const validateRequest = cache(
+    async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
+        const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+        if (!sessionId) {
+            return {
+                user: null,
+                session: null
+            };
+        }
+
+        const result = await lucia.validateSession(sessionId);
+        // next.js throws when you attempt to set cookie when rendering page
+
+        try {
+            if (result.session && result.session.fresh) {
+                const sessionCookie = lucia.createSessionCookie(result.session.id);
+                cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+            }
+            if (!result.session) {
+                const sessionCookie = lucia.createBlankSessionCookie();
+                cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+            }
+        } catch {
+        }
+        return result;
+    }
+);
 
 export async function signUpAction(_prevState: AuthActionResult, formData: FormData): Promise<AuthActionResult> {
     const validatedFields = authSchema.safeParse({

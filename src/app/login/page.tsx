@@ -6,9 +6,10 @@ import {useFormState} from "react-dom";
 export default function Login() {
     const [state, formAction] = useFormState(loginAction, {});
 
+
     return (
         <div className="bg-white grid grid-cols-3 grid-rows-3 justify-items-center">
-            <form action={formAction} className="col-start-2 row-start-2 grid grid-cols-2 space-y-2.5 min-w-80">
+            <form action={formAction} className="col-start-2 row-start-2 grid grid-cols-2 space-y-2.5">
                 <h1 className="font-bold text-4xl col-span-1">Sign in</h1>
                 {state.message && <div
                     className="col-span-1  bg-red-500 border rounded-xl font-bold text-white p-2 flex items-center justify-self-center space-x-2">
@@ -20,10 +21,11 @@ export default function Login() {
                     <p>{state.message}</p>
                 </div>}
                 <label htmlFor="username" className="col-span-2 text-xl">Username</label>
-                <input name="username" id="username" className="border rounded-xl h-10 p-2 border-black col-span-2"/>
+                <input name="username" id="username"
+                       className="border rounded-xl h-10 p-2 border-black col-span-2 w-96"/>
                 <label htmlFor="password" className="col-span-2 text-xl">Password</label>
                 <input type="password" name="password" id="password"
-                       className="border rounded-xl h-10 p-2 border-black col-span-2"/>
+                       className="border rounded-xl h-10 p-2 border-black col-span-2 w-96"/>
                 <button
                     className="!mt-4 text-lg border rounded-lg font-bold bg-blue-600 text-white hover:border-blue-950 transition-all w-2/3 justify-self-center">
                     Log in

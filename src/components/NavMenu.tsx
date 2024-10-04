@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import NavLink from "@/components/NavLink";
-import {validateRequest} from "@/lib/auth";
+import {validateRequest} from "@/lib/authActions";
 import AuthStatus from "@/components/AuthStatus";
 
 
