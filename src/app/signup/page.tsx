@@ -8,8 +8,8 @@ export default function SignUp() {
     const [state, formAction] = useFormState(signUpAction, {message: ""});
 
     return (
-        <div className="bg-white grid grid-cols-3 grid-rows-3 justify-items-center">
-            <form action={formAction} className="col-start-2 row-start-2 grid grid-cols-2 space-y-2.5">
+        <div className="bg-white flex-grow flex justify-center items-center">
+            <form action={formAction} className="grid grid-cols-2 space-y-2.5">
                 <h1 className="font-bold text-4xl col-span-1">Sign up</h1>
                 {state.message && <div
                     className="col-span-1  bg-red-500 border rounded-xl font-bold text-white p-2 flex items-center justify-self-center space-x-2">
@@ -21,17 +21,18 @@ export default function SignUp() {
                     <p>{state.message}</p>
                 </div>}
                 <label htmlFor="username" className="col-span-2 text-xl">Username</label>
-                <input name="username" id="username" className="border rounded-xl h-10 p-2 border-black col-span-2 w-96"
+                <input name="username" id="username"
+                       className="border rounded-xl h-10 p-2 border-black col-span-2 w-80 sm:w-96"
                        placeholder={"Alphanumeric, 3-10 characters"}/>
                 <label htmlFor="password" className="col-span-2 text-xl">Password</label>
                 <input type="password" name="password" id="password"
-                       className="border rounded-xl h-10 p-2 border-black col-span-2 w-96"
+                       className="border rounded-xl h-10 p-2 border-black col-span-2 w-80 sm:w-96"
                        placeholder={"8-16 characters"}/>
                 <button
-                    className="!mt-4 text-lg border rounded-lg font-bold bg-blue-600 text-white hover:border-blue-950 transition-all w-2/3">
+                    className="!mt-4 text-lg border rounded-lg font-bold bg-blue-600 text-white hover:border-blue-950 transition-all w-2/3 col-span-2 sm:col-span-1 justify-self-center sm:justify-self-start">
                     Sign up
                 </button>
-                <Link href="/login" className="text-center text-sm !mt-4 self-center text-blue-600">
+                <Link href="/login" className="text-center text-sm !mt-4 self-center text-blue-600 col-span-2 sm:col-span-1">
                     Already a member? Login here</Link>
             </form>
         </div>

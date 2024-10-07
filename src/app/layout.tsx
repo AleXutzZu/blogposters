@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-        <body className="bg-gray-300 p-2">
+        <body className="bg-gray-300 p-2 flex flex-col min-h-screen">
         <NavMenu/>
         {children}
         </body>
