@@ -1,6 +1,6 @@
 "use client";
 
-import type {ForwardedRef} from 'react'
+import type {ForwardedRef} from 'react';
 import {
     headingsPlugin,
     listsPlugin,
@@ -9,8 +9,16 @@ import {
     markdownShortcutPlugin,
     MDXEditor,
     type MDXEditorMethods,
-    type MDXEditorProps
-} from '@mdxeditor/editor'
+    type MDXEditorProps,
+    toolbarPlugin,
+    UndoRedo,
+    BoldItalicUnderlineToggles,
+    ListsToggle,
+    CreateLink,
+    linkDialogPlugin,
+    InsertTable, tablePlugin
+} from '@mdxeditor/editor';
+import '@mdxeditor/editor/style.css';
 
 // Only import this to the next file
 export default function InitializedMDXEditor({
@@ -25,7 +33,19 @@ export default function InitializedMDXEditor({
                 listsPlugin(),
                 quotePlugin(),
                 thematicBreakPlugin(),
-                markdownShortcutPlugin()
+                markdownShortcutPlugin(),
+                linkDialogPlugin(),
+                tablePlugin(),
+                toolbarPlugin({
+                    toolbarContents: () => (
+                        <>
+                            <UndoRedo/>
+                            <BoldItalicUnderlineToggles/>
+                            <ListsToggle/>
+                            <CreateLink/>
+                            <InsertTable/>
+                        </>)
+                })
             ]}
             {...props}
             ref={editorRef}

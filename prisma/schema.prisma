@@ -30,9 +30,9 @@ model Post {
   body      String
   userId    String
   createdAt DateTime
-  likes Like[]
+  likes     Like[]
 
-  user  User   @relation(references: [id], fields: [userId])
+  user User @relation(references: [id], fields: [userId])
 }
 
 model Like {
