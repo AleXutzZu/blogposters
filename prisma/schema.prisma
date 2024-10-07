@@ -8,10 +8,12 @@ datasource db {
 }
 
 model User {
-  id           String    @id
-  sessions     Session[]
-  username     String    @unique
+  id            String    @id
+  sessions      Session[]
+  username      String    @unique
   password_hash String
+  posts         Post[]
+  likedPosts    Like[]
 }
 
 model Session {
@@ -20,4 +22,24 @@ model Session {
   expiresAt DateTime
 
   user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model Post {
+  title     String
+  id        String   @id
+  body      String
+  userId    String
+  createdAt DateTime
+  likes Like[]
+
+  user  User   @relation(references: [id], fields: [userId])
+}
+
+model Like {
+  id     String @id
+  postId String
+  userId String
+
+  post Post @relation(references: [id], fields: [postId])
+  user User @relation(references: [id], fields: [userId])
 }
