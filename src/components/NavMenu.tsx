@@ -16,7 +16,7 @@ export default async function NavMenu() {
             </Link>
             <div className="flex space-x-12 items-center justify-center">
                 <NavLink to={"/about"} name={"About"}/>
-                <NavLink to={"/blog"} name={"Blog"}/>
+                <NavLink to={"/create"} name={"Post"}/>
                 <NavLink to={"/users"} name={"Users"}/>
                 {!user && <NavLink to={"/login"} name={"Login"} otherClasses="px-20"/>}
                 {user && <AuthStatus username={user.username}/>}
