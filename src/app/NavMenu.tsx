@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import NavLink from "@/components/NavLink";
+import NavLink from "@/app/NavLink";
 import {validateRequest} from "@/lib/authActions";
-import AuthStatus from "@/components/AuthStatus";
+import AuthStatus from "@/app/AuthStatus";
 
 
 export default async function NavMenu() {
