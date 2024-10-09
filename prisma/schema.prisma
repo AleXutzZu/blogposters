@@ -26,17 +26,18 @@ model Session {
 
 model Post {
   title     String
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   body      String
   userId    String
   createdAt DateTime
+  editedAt  DateTime?
   likes     Like[]
 
   user User @relation(references: [id], fields: [userId])
 }
 
 model Like {
-  id     String @id
+  id     Int    @id @default(autoincrement())
   postId Int
   userId String
 
