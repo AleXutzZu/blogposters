@@ -5,6 +5,8 @@ import {format} from "date-fns";
 import {validateRequest} from "@/lib/authActions";
 import {LikeButton} from "@/components/LikeButton";
 import {revalidatePath} from "next/cache";
+import {serialize} from "next-mdx-remote/serialize";
+import PostRendererClient from "@/app/posts/[id]/PostRendererClient";
 
 export type PostParams = {
     params: { id: string }
@@ -20,6 +22,8 @@ export default async function Post({params}: PostParams) {
     });
 
     if (!post) notFound();
+
+    const serializedData = await serialize(post.body);
 
     const likes = await prisma.like.count({
         where: {
@@ -82,16 +86,16 @@ export default async function Post({params}: PostParams) {
         <div className="bg-white flex-grow">
             <div className="flex flex-col mt-10 mx-5 lg:mx-64 space-y-4">
                 <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-blue-700 rounded-2xl"></div>
-                    <div className="flex flex-col">
-                        <h1 className="font-bold text-5xl">{post.title}</h1>
+                    <div className="w-12 h-12 bg-blue-700 rounded-2xl flex-shrink-0"></div>
+                    <div className="flex flex-col flex-grow">
+                        <h1 className="font-bold text-xl md:text-3xl mr-1 break-all">{post.title}</h1>
                         {postOwner &&
                             <Link href={`/users/${postOwner.username}`}
                                   className="text-xl">by {postOwner.username} </Link>}
                         {!postOwner && <p className="text-xl">By [Deleted User]</p>}
                     </div>
                 </div>
-                <p className="">{post.body}</p>
+                <PostRendererClient serializedData={serializedData}/>
                 <div
                     className="flex justify-between border-t py-2 border-b items-start sm:items-center flex-col sm:flex-row">
                     <div className="flex space-x-10">
