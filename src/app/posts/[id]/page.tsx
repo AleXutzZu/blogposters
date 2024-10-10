@@ -1,26 +1,31 @@
 import {prisma} from "@/lib/prisma";
-import {notFound} from "next/navigation";
+import {notFound, redirect} from "next/navigation";
 import Link from "next/link";
 import {format} from "date-fns";
 import {validateRequest} from "@/lib/authActions";
+import {LikeButton} from "@/components/LikeButton";
+import {revalidatePath} from "next/cache";
 
-type Props = {
+export type PostParams = {
     params: { id: string }
 }
 
-export default async function Post({params}: Props) {
+export default async function Post({params}: PostParams) {
     if (isNaN(Number(params.id))) notFound();
 
     const post = await prisma.post.findUnique({
         where: {
             id: Number(params.id)
-        },
-        include: {
-            likes: true
         }
     });
 
     if (!post) notFound();
+
+    const likes = await prisma.like.count({
+        where: {
+            postId: post.id
+        }
+    });
 
     const postOwner = await prisma.user.findUnique({
         where: {
@@ -28,7 +33,50 @@ export default async function Post({params}: Props) {
         },
     });
 
+    const addLike = async () => {
+        "use server";
+        const {user} = await validateRequest();
+        if (!user) redirect("/login");
+
+        await prisma.like.create({
+            data: {
+                postId: post.id,
+                userId: user.id,
+            }
+        });
+        revalidatePath(`/posts/${post.id}`);
+    }
+
+    const removeLike = async () => {
+        "use server";
+        const {user} = await validateRequest();
+        if (!user) redirect("/login");
+
+        await prisma.like.delete({
+            where: {
+                userId_postId: {
+                    postId: post.id,
+                    userId: user.id,
+                }
+            }
+        });
+        revalidatePath(`/posts/${post.id}`);
+    }
+
+    let isLiked = false;
+
     const {user} = await validateRequest();
+    if (user) {
+        const like = await prisma.like.findUnique({
+            where: {
+                userId_postId: {
+                    userId: user.id,
+                    postId: post.id
+                }
+            }
+        });
+        if (like) isLiked = true;
+    }
 
     return (
         <div className="bg-white flex-grow">
@@ -47,15 +95,7 @@ export default async function Post({params}: Props) {
                 <div
                     className="flex justify-between border-t py-2 border-b items-start sm:items-center flex-col sm:flex-row">
                     <div className="flex space-x-10">
-                        <div className="flex space-x-2 items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
-                                 stroke="currentColor"
-                                 className={`size-6 stroke-red-700`}>
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                      d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/>
-                            </svg>
-                            <p className="text-red-700 font-bold text-lg">{post.likes.length}</p>
-                        </div>
+                        <LikeButton addLike={addLike} removeLike={removeLike} likes={likes} isLiked={isLiked}/>
                         <div className="flex space-x-2 items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
                                  stroke="currentColor" className="size-6">
